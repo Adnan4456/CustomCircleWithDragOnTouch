@@ -15,11 +15,12 @@ class CustomCircle: View {
     private lateinit var paint: Paint
 
 
-     val x = width
+     var mCircleX = 0f
 
-    private var y = height
+    private var mCircleY = 0f
 
-    private var radius = 200
+    private var radius = 200f
+
 
     constructor(context: Context) : super(context){
         init(null)
@@ -50,7 +51,65 @@ class CustomCircle: View {
 //        if you want to draw circle at centre.
 //        You could also translate your entire canvas to
 //        center then draw circle at center.using
-        canvas!!.translate(width/2f , height/2f)
-        canvas!!.drawCircle(x.toFloat()/2 , y.toFloat()/2 , radius.toFloat(),paint )
+//        canvas!!.translate(width/2f , height/2f)
+
+        //Position circle to center of view
+        if (mCircleX == 0f || mCircleY == 0f){
+            mCircleX = width /2f
+            mCircleY = height /2f
+        }
+
+        canvas!!.drawCircle(mCircleX , mCircleY , radius,paint )
+    }
+
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+//        return super.onTouchEvent(event)
+        var value:Boolean = super.onTouchEvent(event)
+
+        when(event!!.action){
+
+            //we need to detect the ACTION_DOWN.Meadn screen is touched
+                //otherwise ACTION_MOVE will not called
+            MotionEvent.ACTION_DOWN ->{
+
+                //getting touch points on view
+                var fX = event.x
+                var fY = event.y
+
+
+                return true
+            }
+        
+
+            MotionEvent.ACTION_MOVE -> {
+
+                //getting touch points on view
+                var fX = event.x
+                var fY = event.y
+
+                //Check that touch is on Circle or not.
+                var dx = Math.pow(fX.toDouble() - mCircleX , 2.0)
+                var dy = Math.pow(fY.toDouble() - mCircleY , 2.0)
+
+                if (dx + dy < Math.pow(radius.toDouble() , 2.0))
+                {
+//                  your circle is touched
+                    mCircleX = fX
+                    mCircleY = fY
+
+                    //Now increase the size of circle on touch
+                    radius = 400f
+
+                    //show these changes call
+                    postInvalidate()
+                    return true
+
+                }
+                return value
+            }
+        }
+
+        return value
     }
 }
