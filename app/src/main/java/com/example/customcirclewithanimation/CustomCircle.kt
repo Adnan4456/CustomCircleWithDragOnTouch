@@ -80,7 +80,13 @@ class CustomCircle: View {
 
                 return true
             }
-        
+            //touch is released
+            MotionEvent.ACTION_UP -> {
+                //again reset the size of circle
+
+                radius = 200f
+                postInvalidate()
+            }
 
             MotionEvent.ACTION_MOVE -> {
 
